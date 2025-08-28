@@ -1,0 +1,55 @@
+models:
+  Category:
+    name: string:100 unique
+    relationships:
+      - hasMany:Article
+
+  Article:
+    title: string:400 unique
+    description: longtext
+    price: decimal:10,2
+    category_id: foreign:Category
+    relationships:
+      - belongsTo:Category
+      - belongsToMany:Store through:Article_In_Store
+      - hasMany:Rental
+
+  Store:
+    name: string:100 unique
+    address: string:255
+    phone: string:20
+    relationships:
+      - belongsToMany:Article through:Article_In_Store
+
+  Article_In_Store:
+    article_id: foreign
+    store_id: foreign
+    stock: integer unsigned
+    relationships:
+      - belongsTo:Article
+      - belongsToMany:Store
+      - hasMany:Rental
+
+  Rental:
+    article_in_store_id: foreign:Article_In_Store
+    user_id: foreign
+    rented_at: timestamp
+    returned_at: timestamp nullable
+    notes: longtext nullable
+    relationships:
+      - belongsTo:Article
+      - belongsToMany:Store
+      - belongsTo:User
+      - hasOne:Invoice
+
+  Invoice:
+    total_amount: decimal:10,2
+    rental_id: foreign
+    issued_at: timestamp
+    payment_status: enum:pending,paid,cancelled
+    payment_method: enum:credit_card,paypal,cash
+    relationships:
+      - belongsTo:Rental
+
+controllers:
+  # ...
