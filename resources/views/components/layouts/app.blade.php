@@ -50,7 +50,8 @@
                 
                 <x-menu-sub title="Settings" icon="o-cog-6-tooth">
                     <x-menu-item title="Wifi" icon="o-wifi" link="####" />
-                    <x-menu-item title="Archives" icon="o-archive-box" link="####" />
+                    <x-menu-item title="Stores" icon="o-archive-box" link="####" />
+                    <x-menu-item title="Browse Articles" icon="o-shopping-cart" link="#" />
                 </x-menu-sub>
             </x-menu>
         </x-slot:sidebar>
