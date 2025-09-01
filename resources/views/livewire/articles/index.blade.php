@@ -78,8 +78,11 @@ new class extends Component {
         @foreach ($this->articles as $article)
             <x-list-item :item="$article" value="title" sub-value="description">
                 <x-slot:actions>
-
-                    <x-button icon="o-trash" class="btn-sm bg-red-500" wire:click="confirmDelete({{ $article->id }})" />
+                    <x-slot:avatar>
+                        <x-badge value="{{ $article->price }}" class="badge-soft" />
+                    </x-slot:avatar>
+                    <x-button icon="o-trash" class="btn-sm bg-red-500"
+                        wire:click="confirmDelete({{ $article->id }})" />
                     <x-button icon="o-pencil" class="btn-sm bg-blue-500"
                         wire:click="dispatchEdit({{ $article->id }})" />
                 </x-slot:actions>
