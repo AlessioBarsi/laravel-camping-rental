@@ -15,6 +15,9 @@ class ArticleInStore extends Model
      *
      * @var array
      */
+
+    protected $table = 'article__in__stores';
+
     protected $fillable = [
         'article_id',
         'store_id',

@@ -66,11 +66,17 @@ new class extends Component {
     {
         $this->dispatch('store-edit', ['id' => $id]);
     }
+
+    public function dispatchStoreArticles($id)
+    {
+        $this->dispatch('store-articles', ['id' => $id]);
+    }
 }; ?>
 
 <div>
     <div class="text-3xl font-bold my-2">Stores</div>
     <livewire:stores.form />
+    <livewire:stores.articles />
     <div class="my-2">
         <x-input label="Clearable" wire:model.live.debounce.250ms="search" placeholder="Search store" clearable />
 
@@ -78,7 +84,7 @@ new class extends Component {
             <x-list-item :item="$store" sub-value="address">
                 <x-slot:actions>
                     <x-badge value="{{ $store->phone }}" class="badge-soft" />
-                    <x-button icon="o-building-storefront" class="btn-sm bg-green-500" wire:click="products" />
+                    <x-button icon="o-building-storefront" class="btn-sm bg-green-500" wire:click="dispatchStoreArticles({{ $store->id }})" />
                     <x-button icon="o-trash" class="btn-sm bg-red-500"
                         wire:click="confirmDelete({{ $store->id }})" />
                     <x-button icon="o-pencil" class="btn-sm bg-blue-500"
