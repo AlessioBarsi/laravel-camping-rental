@@ -16,12 +16,14 @@ new class extends Component {
 
     public function getArticlesProperty()
     {
-        return Article::when($this->search, function ($query) {
-            $search = strtolower($this->search);
-            $query->where(function ($q) use ($search) {
-                $q->whereRaw('LOWER(title) LIKE ?', ["%{$search}%"])->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
-            });
-        })->paginate(5);
+        return Article::with('category') // eager load category
+            ->when($this->search, function ($query) {
+                $search = strtolower($this->search);
+                $query->where(function ($q) use ($search) {
+                    $q->whereRaw('LOWER(title) LIKE ?', ["%{$search}%"])->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
+                });
+            })
+            ->paginate(5);
     }
 
     public function updatedSearch()
@@ -76,13 +78,19 @@ new class extends Component {
             clearable />
 
         @foreach ($this->articles as $article)
-            <x-list-item :item="$article" value="title" sub-value="description">
+            <x-list-item :item="$article">
                 <x-slot:actions>
+                    <x-slot:value>
+                        {{ $article->title }}
+                    </x-slot:value>
+                    <x-slot:sub-value>
+                        {{ $article->description }}
+                    </x-slot:sub-value>
                     <x-slot:avatar>
-                        <x-badge value="{{ $article->price }}" class="badge-soft" />
+                        <x-badge value="{{ $article->category->name }}" class="badge-primary" />
+                        <x-badge value="{{ $article->price }}" class="badge-soft mx-2" />
                     </x-slot:avatar>
-                    <x-button icon="o-trash" class="btn-sm bg-red-500"
-                        wire:click="confirmDelete({{ $article->id }})" />
+                    <x-button icon="o-trash" class="btn-sm bg-red-500" wire:click="confirmDelete({{ $article->id }})" />
                     <x-button icon="o-pencil" class="btn-sm bg-blue-500"
                         wire:click="dispatchEdit({{ $article->id }})" />
                 </x-slot:actions>
