@@ -68,11 +68,17 @@ new class extends Component {
     {
         $this->dispatch('article-edit', ['id' => $id]);
     }
+
+    public function dispatchImagesDrawer($id)
+    {
+        $this->dispatch('article-images', ['id' => $id]);
+    }
 }; ?>
 
 <div>
     <div class="text-3xl font-bold my-2">Articles</div>
     <livewire:articles.form />
+    <livewire:articles.images />
     <div class="my-2">
         <x-input label="Clearable" wire:model.live.debounce.250ms="search" placeholder="Search article name or description"
             clearable />
@@ -93,6 +99,7 @@ new class extends Component {
                     <x-button icon="o-trash" class="btn-sm bg-red-500" wire:click="confirmDelete({{ $article->id }})" />
                     <x-button icon="o-pencil" class="btn-sm bg-blue-500"
                         wire:click="dispatchEdit({{ $article->id }})" />
+                    <x-button icon="o-photo" class="btn-sm bg-green-500" wire:click="dispatchImagesDrawer({{ $article->id }})" />
                 </x-slot:actions>
             </x-list-item>
         @endforeach

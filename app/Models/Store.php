@@ -31,4 +31,9 @@ class Store extends Model
             'id' => 'integer',
         ];
     }
+
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
 }
