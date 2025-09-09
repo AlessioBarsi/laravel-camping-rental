@@ -80,7 +80,7 @@ new class extends Component {
     <livewire:articles.form />
     <livewire:articles.images />
     <div class="my-2">
-        <x-input label="Clearable" wire:model.live.debounce.250ms="search" placeholder="Search article name or description"
+        <x-input label="Search" wire:model.live.debounce.250ms="search" placeholder="Search article name or description"
             clearable />
 
         @foreach ($this->articles as $article)

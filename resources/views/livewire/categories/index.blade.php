@@ -69,7 +69,7 @@ new class extends Component {
     <div class="text-3xl font-bold my-2">Categories</div>
     <livewire:categories.form />
     <div class="my-2">
-        <x-input label="Clearable" wire:model.live.debounce.250ms="search" placeholder="Search category" clearable />
+        <x-input label="Search" wire:model.live.debounce.250ms="search" placeholder="Search category name" clearable />
 
         @foreach ($this->categories as $category)
             <x-list-item :item="$category">

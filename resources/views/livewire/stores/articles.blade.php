@@ -111,6 +111,4 @@ new class extends Component {
         <x-button label="Close" @click="$wire.showDrawer = false" />
         <x-button class="bg-green-500 mx-2" label="View Store Page" link="/stores" />
     </x-drawer>
-
-    <x-button label="Open Right" wire:click="$toggle('showDrawer')" />
 </div>
