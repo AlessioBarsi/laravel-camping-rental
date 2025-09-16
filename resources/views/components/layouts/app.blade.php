@@ -70,6 +70,8 @@
 
         {{-- The `$slot` goes here --}}
         <x-slot:content>
+            <livewire:shop.shopping-cart />
+
             {{ $slot }}
         </x-slot:content>
     </x-main>

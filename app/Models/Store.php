@@ -36,4 +36,9 @@ class Store extends Model
     {
         return $this->morphMany(Image::class, 'imageable');
     }
+
+    public function articles()
+    {
+        return $this->belongsToMany(Article::class, 'article__in__stores');
+    }
 }

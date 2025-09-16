@@ -45,4 +45,9 @@ class Article extends Model
     {
         return $this->morphMany(Image::class, 'imageable');
     }
+
+    public function stores()
+    {
+        return $this->belongsToMany(Store::class, 'article__in__stores')->withPivot('stock');
+    }
 }
