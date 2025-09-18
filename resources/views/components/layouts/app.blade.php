@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ isset($title) ? $title . ' - ' . config('app.name') : config('app.name') }}</title>
-
+    @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -48,12 +48,15 @@
                     </x-list-item>
 
                     <x-menu-separator />
+                @else
+                    <x-menu-item title="Login" icon="o-user-circle" link="/login" />
                 @endif
 
                 <x-menu-item title="Homepage" icon="o-home" link="/" />
                 <x-menu-item title="Stores" icon="o-building-storefront" link="/shop/stores" />
                 <x-menu-item title="Articles" icon="o-cube" link="/shop/articles" />
                 <x-menu-item title="Categories" icon="o-tag" link="/shop/categories" />
+                <x-menu-item title="Cart" icon="o-shopping-cart" x-on:click="window.Livewire.dispatch('toggle-cart')" />
 
                 @if ($user = auth()->user())
                     <x-menu-item title="My Account" icon="o-document" link="/profile/rentals" />
@@ -61,9 +64,9 @@
                 @endif
 
                 <x-menu-sub title="Settings" icon="o-cog-6-tooth">
-                    <x-menu-item title="Wifi" icon="o-wifi" link="####" />
-                    <x-menu-item title="Stores" icon="o-archive-box" link="####" />
-                    <x-menu-item title="Browse Articles" icon="o-shopping-cart" link="#" />
+                    <x-menu-item title="Item 1" icon="o-wifi" link="####" />
+                    <x-menu-item title="Item 2" icon="o-archive-box" link="####" />
+                    <x-menu-item title="Item 3" icon="o-shopping-cart" link="#" />
                 </x-menu-sub>
             </x-menu>
         </x-slot:sidebar>
@@ -78,6 +81,7 @@
 
     {{--  TOAST area --}}
     <x-toast />
+    @livewireScripts
 </body>
 
 </html>

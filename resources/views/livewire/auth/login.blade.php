@@ -37,8 +37,8 @@ new class extends Component {
     }
 }; ?>
 
-<div>
-    <x-form class="w-[50%]" wire:submit="login">
+<div class="flex justify-center w-full">
+    <x-form class="w-full md:w-[50%]" wire:submit="login">
         <x-input label="Email" wire:model="email" />
         <x-input label="Password" wire:model="password" type="password" />
 

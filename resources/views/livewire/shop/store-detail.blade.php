@@ -12,8 +12,6 @@ new class extends Component {
 
     public $store = null;
     public string $search = '';
-    public $storesForArticle = null;
-    public bool $storesDrawer = false;
 
     public function getArticlesProperty()
     {
@@ -40,24 +38,26 @@ new class extends Component {
         $this->store = Store::with(['articles', 'images'])->findOrFail($id);
     }
 
-    public function openStoresDrawer($id)
+    public function showStoresDrawer($id)
     {
-        $this->storesForArticle = null;
-        $article = $article = $this->articles->where('id', $id)->first();
-        $this->storesForArticle = $article->stores;
-        $this->storesDrawer = true;
+        $this->dispatch('show-stores-drawer', ['id' => $id]);
     }
 
     public function addToCart($id)
     {
-        $this->dispatch('add-to-cart', ['storeId' => $this->store->id , 'articleId' => $id]);
+        $this->dispatch('add-to-cart', ['storeId' => $this->store->id, 'articleId' => $id]);
     }
 }; ?>
 
 <div>
-    <div class="text-3xl font-bold my-2 text-center">Articles available at {{ $store->name }}</div>
+    <div class="text-3xl font-bold my-2 text-center">{{ $store->name }}</div>
 
-    <div class="grid grid-cols-2 gap-4 my-3">
+    @if ($this->articles->count() <= 0)
+        <x-alert title="This store doesn't have any articles available at this moment" icon="o-exclamation-triangle" class="alert-warning my-2 w-[50%]" />    
+    @else
+        <x-input label="Search" wire:model.live.debounce.500ms="search" placeholder="Search article title or description" clearable />
+    @endif
+    <div class="grid grid-cols-1 gap-4 my-3 md:grid-cols-2">
         @foreach ($this->articles as $article)
             <x-card key="{{ $article->id }}" class="w-full" separator title="{{ $article->title }}"
                 subtitle="{{ $article->stores->count() > 1 ? 'Available at other stores' : 'Only available at this store' }}">
@@ -87,7 +87,8 @@ new class extends Component {
                 <div class="my-2 w-[70%]">
                     @switch(true)
                         @case($stock <= 10)
-                            <x-alert title="Only {{ $stock }} article(s) remaining" icon="o-exclamation-triangle" class="alert-warning" />
+                            <x-alert title="Only {{ $stock }} article(s) remaining" icon="o-exclamation-triangle"
+                                class="alert-warning" />
                         @break
 
                         @case($stock <= 0)
@@ -112,7 +113,7 @@ new class extends Component {
 
                 <x-slot:actions>
                     <x-button label="Other Stores" icon="o-building-storefront" class="bg-green-500"
-                        wire:click="openStoresDrawer({{ $article->id }})" :disabled="$article->stores->count() <= 1" spinner />
+                        wire:click="showStoresDrawer({{ $article->id }})" :disabled="$article->stores->count() <= 1" spinner />
                     <x-button label="Add to Cart" icon="o-shopping-cart" class="btn-primary"
                         wire:click="addToCart({{ $article->id }})" :disabled="$stock <= 0" spinner />
                 </x-slot:actions>
@@ -120,38 +121,7 @@ new class extends Component {
         @endforeach
     </div>
 
-    <x-drawer wire:model="storesDrawer" class="w-11/12 lg:w-1/3">
-        @if ($this->storesForArticle !== null)
-            @foreach ($this->storesForArticle as $store)
-                <x-list-item :item="$store">
-                    <x-slot:value>
-                        {{ $store->name }}
-                    </x-slot:value>
-                    <x-slot:sub-value class="my-1 mx-2">
-                        <x-badge value="{{ $store->pivot->stock }} in stock" class="badge-primary mx-2" />
-                        {{ $store->address }}
-                    </x-slot:sub-value>
-                    <x-slot:actions>
-                        <x-button icon="o-paper-airplane" class="btn-sm bg-green-500" tooltip="Visit Store Page"
-                            link="/shop/stores/{{ $store->id }}" />
-                        <x-button icon="o-map-pin" class="btn-secondary btn-sm"
-                            link="https://www.google.com/maps/search/?api=1&query={{ urlencode($store->address) }}"
-                            tooltip="See position" />
-                        <x-button icon="o-phone" class="btn-primary btn-sm" link="tel:{{ $store->phone }}"
-                            tooltip="Call Store" />
-                    </x-slot:actions>
-                </x-list-item>
-            @endforeach
-        @else
-            <div>
-                <x-alert title="Stores could not be loaded"
-                    description="An error occurred while loading stores. Please refresh the page and try again"
-                    icon="o-exclamation-triangle" class="alert-warning" />
-            </div>
-        @endif
-
-        <x-button class="my-2" label="Close" @click="$wire.storesDrawer = false" />
-    </x-drawer>
+    <livewire:shop.stores-drawer />
 
     {{ $this->articles->links() }}
 </div>

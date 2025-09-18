@@ -20,8 +20,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Volt::route('/', 'home')->name('home');
-Volt::route('/shop/stores', 'shop.stores');
+Volt::route('/shop/stores', 'shop.stores-index');
 Volt::route('/shop/stores/{id}', 'shop.store-detail');
+Volt::route('/shop/articles', 'shop.articles-index');
 Volt::route('/shop/articles/{id}', 'shop.article-detail');
 
 Volt::route('/categories', 'categories.index')->name('categories');

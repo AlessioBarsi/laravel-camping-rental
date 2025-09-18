@@ -34,6 +34,7 @@ new class extends Component {
             if (!in_array($articleInStore->id, $this->shoppingCart)) {
                 $this->shoppingCart[] = $articleInStore->id;
                 session()->put('shoppingCart', $this->shoppingCart);
+                $this->success('Article added to your cart');
             } else {
                 $this->warning('Article is already in your cart');
             }
@@ -42,10 +43,10 @@ new class extends Component {
         }
     }
 
-    #[\Livewire\Attributes\On('show-cart')]
-    public function showCart()
+    #[\Livewire\Attributes\On('toggle-cart')]
+    public function toggleCart()
     {
-        $this->cartDrawer = true;
+        $this->cartDrawer = !$this->cartDrawer;
     }
 
     public function removeFromCart($articleInStoreId)
@@ -70,6 +71,7 @@ new class extends Component {
 }; ?>
 
 <div>
+
     <x-drawer wire:model="cartDrawer" class="w-11/12 lg:w-1/3" right>
         <div>
             @if ($this->cartItems->count() > 0)
