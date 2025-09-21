@@ -12,8 +12,8 @@ new class extends Component {
 
         <x-card class="w-[30%]" title="Rent Camping Gear Easy"
             subtitle="Affordable, high-quality equipment for your next adventure" shadow separator>
-            <x-button label="Browse Stores" class="btn-primary" />
-            <x-button label="Sign Up" class="mx-3 underline" />
+            <x-button label="Browse Stores" class="btn-primary" link="/shop/stores"/>
+            <x-button label="Sign Up" class="mx-3 underline" link="/register"/>
         </x-card>
 
         <x-card title="How it works" class="w-[70%]" shadow separator>
@@ -50,8 +50,11 @@ new class extends Component {
 
         </x-card>
     </div>
+    <div class="flex justify-between">
 
-    <h1>Latest Gear</h1>
+    </div>
+    <livewire:shop.articles-carousel />
+    
     <h1>Our Stores</h1>
     <h1>Your rentals</h1>
     <h1>Visit your Profile</h1>
