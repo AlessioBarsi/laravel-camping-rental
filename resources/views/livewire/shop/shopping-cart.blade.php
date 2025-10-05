@@ -91,15 +91,16 @@ new class extends Component {
                 <x-list-item :item="$articleInCart">
                     <x-slot:avatar>
                         <x-avatar :image="asset('storage/' . $image_url)" alt="{{ $image_url }}" />
-
                     </x-slot:avatar>
                     <x-slot:value>
                         {{ $articleInCart->article->title }}
+                        <x-badge value="{{ $articleInCart->article->price }} $" class="badge-neutral badge-sm" />
                     </x-slot:value>
                     <x-slot:sub-value>
                         From store {{ $articleInCart->store->name }}
                     </x-slot:sub-value>
                     <x-slot:actions>
+                        <x-badge class="mt-1" value="x1" class="badge-primary badge-sm" />
                         <x-button icon="o-trash" class="btn-sm" wire:click="removeFromCart({{ $articleInCart->id }})"
                             spinner />
                     </x-slot:actions>
@@ -107,10 +108,13 @@ new class extends Component {
             @endforeach
 
         </div>
-        <div class="flex items-end my-2 space-x-5">
-            <x-button label="Close" @click="$wire.cartDrawer = false" />
-            <x-button label="Check Out" class="btn-primary" wire:click="checkOut" spinner />
+        <div class="flex items-end my-4 space-x-5">
+            <x-button class="btn-primary" wire:click="checkOut" spinner>
+                Check Out
+                <x-badge value="999.999 $" class="badge-neutral badge-sm" />
+            </x-button>
             <x-button label="Empty Cart" class="btn-secondary" wire:click="clearCart" spinner />
+            <x-button label="Close" @click="$wire.cartDrawer = false" />
         </div>
     </x-drawer>
 </div>

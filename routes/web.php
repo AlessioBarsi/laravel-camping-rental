@@ -24,6 +24,7 @@ Volt::route('/shop/stores', 'shop.stores-index');
 Volt::route('/shop/stores/{id}', 'shop.store-detail');
 Volt::route('/shop/articles', 'shop.articles-index');
 Volt::route('/shop/articles/{id}', 'shop.article-detail');
+Volt::route('/shop/categories', 'shop.categories-index');
 
 Volt::route('/categories', 'categories.index')->name('categories');
 Volt::route('/articles', 'articles.index')->name('articles');

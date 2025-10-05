@@ -29,4 +29,9 @@ class Category extends Model
             'id' => 'integer',
         ];
     }
+
+    public function articles()
+    {
+        return $this->hasMany(Article::class);
+    }
 }

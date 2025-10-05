@@ -5,6 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    {{--  Currency  --}}
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/robsontenorio/mary@0.44.2/libs/currency/currency.js">
+    </script>
+
     <title>{{ isset($title) ? $title . ' - ' . config('app.name') : config('app.name') }}</title>
     @livewireStyles
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -56,7 +61,8 @@
                 <x-menu-item title="Stores" icon="o-building-storefront" link="/shop/stores" />
                 <x-menu-item title="Articles" icon="o-cube" link="/shop/articles" />
                 <x-menu-item title="Categories" icon="o-tag" link="/shop/categories" />
-                <x-menu-item title="Cart" icon="o-shopping-cart" x-on:click="window.Livewire.dispatch('toggle-cart')" />
+                <x-menu-item title="Cart" icon="o-shopping-cart"
+                    x-on:click="window.Livewire.dispatch('toggle-cart')" />
 
                 @if ($user = auth()->user())
                     <x-menu-item title="My Account" icon="o-document" link="/profile/rentals" />

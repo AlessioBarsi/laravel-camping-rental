@@ -37,20 +37,23 @@ new class extends Component {
 
         {{ $this->article->description }}
 
-        @if ($this->article->stores->count () <= 0)
-            <x-alert title="This article has yet to arrive to our stores" icon="o-exclamation-triangle" class="my-2"/>
+        @if ($this->article->stores->count() <= 0)
+            <x-alert title="This article has yet to arrive to our stores" icon="o-exclamation-triangle" class="my-2" />
         @endif
         <x-slot:menu>
             <x-button icon="o-tag" class="btn-primary btn-sm"
-                tooltip="Browse category {{ $this->article->category->name }}"
+                tooltip="Browse Category {{ $this->article->category->name }}"
                 link="/shop/categories/{{ $this->article->category_id }}" />
         </x-slot:menu>
 
         <x-slot:actions>
-            <x-button label="Browse Stores" icon="o-building-storefront" class="bg-green-500"
-                wire:click="showStoresDrawer({{ $this->article->id }})" :disabled="$article->stores->count() <= 0" spinner/>
+            <x-button icon="o-building-storefront" class="bg-green-500"
+                wire:click="showStoresDrawer({{ $this->article->id }})" :disabled="$article->stores->count() <= 0" spinner>
+                Browse Stores
+                <x-badge value="{{ $this->article->price }} $" class="badge-neutral badge-sm" />
+            </x-button>
         </x-slot:actions>
     </x-card>
 
-    <livewire:shop.stores-drawer/>
+    <livewire:shop.stores-drawer />
 </div>
