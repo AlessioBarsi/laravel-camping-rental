@@ -8,17 +8,30 @@ new class extends Component {
     use Toast;
     public $shoppingCart = [];
     public bool $cartDrawer = false;
+    public float $totalValue = 0.0;
 
     public function mount()
     {
         $this->shoppingCart = session('shoppingCart', []);
+        $this->totalValue = 0.0;
     }
 
     public function getCartItemsProperty()
     {
+        // Extract only item IDs from the shoppingCart array
+        $itemIds = collect($this->shoppingCart)->pluck('item')->toArray();
+
         return ArticleInStore::with(['article.images', 'store'])
-            ->whereIn('id', $this->shoppingCart)
-            ->get();
+            ->whereIn('id', $itemIds)
+            ->get()
+            ->map(function ($articleInStore) {
+            // Attach the quantity from the shopping cart
+            $quantity = collect($this->shoppingCart)
+                ->firstWhere('item', $articleInStore->id)['quantity'] ?? 1;
+            $articleInStore->quantity = $quantity;
+            $this->totalValue += $quantity*$articleInStore->article->price;
+            return $articleInStore;
+        });
     }
 
     #[\Livewire\Attributes\On('add-to-cart')]
@@ -28,16 +41,24 @@ new class extends Component {
             $articleId = $payload['articleId'];
             $storeId = $payload['storeId'];
             $this->cartDrawer = true;
-
+            //Get record of selected article from pivot table
             $articleInStore = ArticleInStore::where('article_id', $articleId)->where('store_id', $storeId)->first();
-
-            if (!in_array($articleInStore->id, $this->shoppingCart)) {
-                $this->shoppingCart[] = $articleInStore->id;
-                session()->put('shoppingCart', $this->shoppingCart);
-                $this->success('Article added to your cart');
+            //Check if article already added to cart
+            $itemIndex = collect($this->shoppingCart)->search(fn($cartItem) => $cartItem['item'] === $articleInStore->id);
+            if ($itemIndex === false) {
+                //Create new entry with id and quantity
+                $this->shoppingCart[] = [
+                    'item' => $articleInStore->id,
+                    'quantity' => 1,
+                ];
+                $this->success('Article added to the cart');
             } else {
-                $this->warning('Article is already in your cart');
+                //Update quantity otherwise
+                $this->shoppingCart[$itemIndex]['quantity']++;
+                $this->success('The cart has been updated');
             }
+            //Save the cart to session
+            session()->put('shoppingCart', $this->shoppingCart);
         } catch (\Exception $e) {
             $this->error('Error: ' . $e->getMessage());
         }
@@ -51,17 +72,20 @@ new class extends Component {
 
     public function removeFromCart($articleInStoreId)
     {
-        $this->shoppingCart = array_filter($this->shoppingCart, fn($id) => $id != $articleInStoreId);
+        //Remove the entry from the array
+        $this->shoppingCart = array_filter($this->shoppingCart, fn($cartItem) => $cartItem['item'] != $articleInStoreId);
+        //Reindex the array
         $this->shoppingCart = array_values($this->shoppingCart);
+        //Sync array to session
         session()->put('shoppingCart', $this->shoppingCart);
-        $this->success('Article has been removed from your cart');
+        $this->success('Article has been removed from the cart');
     }
 
     public function clearCart()
     {
         $this->shoppingCart = [];
         session()->forget('shoppingCart');
-        $this->success('Your cart has been emptied');
+        $this->success('The cart has been emptied');
     }
 
     public function checkOut()
@@ -94,13 +118,13 @@ new class extends Component {
                     </x-slot:avatar>
                     <x-slot:value>
                         {{ $articleInCart->article->title }}
-                        <x-badge value="{{ $articleInCart->article->price }} $" class="badge-neutral badge-sm" />
+                        <x-badge value="{{ $articleInCart->article->price*$articleInCart->quantity }} $" class="badge-neutral badge-sm" />
                     </x-slot:value>
                     <x-slot:sub-value>
                         From store {{ $articleInCart->store->name }}
                     </x-slot:sub-value>
                     <x-slot:actions>
-                        <x-badge class="mt-1" value="x1" class="badge-primary badge-sm" />
+                        <x-badge class="mt-1" value="x{{ $articleInCart->quantity }}" class="badge-primary badge-sm" />
                         <x-button icon="o-trash" class="btn-sm" wire:click="removeFromCart({{ $articleInCart->id }})"
                             spinner />
                     </x-slot:actions>
@@ -111,7 +135,7 @@ new class extends Component {
         <div class="flex items-end my-4 space-x-5">
             <x-button class="btn-primary" wire:click="checkOut" spinner>
                 Check Out
-                <x-badge value="999.999 $" class="badge-neutral badge-sm" />
+                <x-badge value="{{ $this->totalValue }} $" class="badge-neutral badge-sm" />
             </x-button>
             <x-button label="Empty Cart" class="btn-secondary" wire:click="clearCart" spinner />
             <x-button label="Close" @click="$wire.cartDrawer = false" />
