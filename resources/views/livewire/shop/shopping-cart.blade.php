@@ -19,6 +19,7 @@ new class extends Component {
     public function getCartItemsProperty()
     {
         // Extract only item IDs from the shoppingCart array
+        $this->totalValue = 0;
         $itemIds = collect($this->shoppingCart)->pluck('item')->toArray();
 
         return ArticleInStore::with(['article.images', 'store'])
