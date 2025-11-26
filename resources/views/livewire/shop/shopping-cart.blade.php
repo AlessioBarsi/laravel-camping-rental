@@ -92,11 +92,12 @@ new class extends Component {
     public function checkOut()
     {
         //WIP
+        $this->dispatch('show-payment-dialog');
     }
 }; ?>
 
 <div>
-
+    <livewire:shop.payment-dialog total="{{ $this->totalValue }}" />
     <x-drawer wire:model="cartDrawer" class="w-11/12 lg:w-1/3" right>
         <div>
             @if ($this->cartItems->count() > 0)
@@ -134,7 +135,7 @@ new class extends Component {
 
         </div>
         <div class="flex items-end my-4 space-x-5">
-            <x-button class="btn-primary" wire:click="checkOut" spinner>
+            <x-button class="btn-primary" wire:click="checkOut" :disabled="$this->cartItems->count() <= 0" spinner>
                 Check Out
                 <x-badge value="{{ $this->totalValue }} $" class="badge-neutral badge-sm" />
             </x-button>
